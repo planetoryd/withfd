@@ -126,9 +126,10 @@ impl<T: AsRawFd> WithFd<T> {
         out_fds: &mut Vec<OwnedFd>,
         buf: &mut [u8],
     ) -> std::io::Result<usize> {
+        let mut buf = [IoSliceMut::new(buf)];
         let recvmsg = nix::sys::socket::recvmsg::<()>(
             fd,
-            &mut [IoSliceMut::new(buf)],
+            &mut buf,
             Some(cmsg),
             nix::sys::socket::MsgFlags::empty(),
         )?;
